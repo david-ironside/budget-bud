@@ -1,23 +1,24 @@
+// components/NavBar.jsx
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function NavBar() {
-  const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate(); // Hook to handle redirects
 
   const handleLogout = async () => {
+    // Redirect early
+    navigate("/"); 
+  
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Logout error:", error.message);
-    } else {
-      navigate("/login"); // Redirect after logout
     }
   };
-  
 
   return (
-    <div className="navbar bg-base-100 shadow mb-6">
+    <div className="navbar bg-base-100 sticky top-0 z-50 shadow">
       <div className="flex-1 px-4 font-bold text-lg">
         <Link to="/">Budget Bud</Link>
         {user && (
