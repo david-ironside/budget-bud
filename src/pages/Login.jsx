@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from 'react-icons/fc';
+import { FaFacebook } from "react-icons/fa"; 
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,7 +10,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -55,8 +55,22 @@ export default function Login() {
     }
     setLoading(false); 
   };
-  
-  
+
+  const handleFacebookLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "facebook",
+      options: {
+        redirectTo: "https://budget-bud-red.vercel.app/dashboard",
+      },
+    });
+    if (error) {
+      console.error("Facebook sign-in error:", error.message);
+      setMessage("Facebook login failed. Please try again.");
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
@@ -91,6 +105,14 @@ export default function Login() {
           >
             <FcGoogle className="text-xl" />
             <span className="text-sm font-medium">Continue with Google</span>
+          </button>
+          <button
+            className="btn btn-outline w-full flex items-center justify-center mt-2"
+            onClick={handleFacebookLogin}
+            disabled={loading}
+          >
+            <FaFacebook className="text-xl mr-2 text-[#1877F2]" />
+            Continue with Facebook
           </button>
         </div>
        {message && (<p className={`text-sm mt-4 text-center ${ message.includes("success") ? "text-green-500" : "text-red-500"}`}>{message}</p>)}
