@@ -9,10 +9,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import NavBar from "./components/NavBar";
+import TrialBanner from "./components/TrialBanner"; 
 import { useAuth } from "./contexts/AuthContext";
 
 export default function App() {
-  const { isAuthenticated } = useAuth();      // comes from context
+  const { isAuthenticated } = useAuth(); 
 
   return (
     <Router>
@@ -20,8 +21,8 @@ export default function App() {
         data-theme="cupcake"
         className="min-h-screen bg-base-100 text-base-content"
       >
+          {isAuthenticated && <TrialBanner />}
         <NavBar />
-
         <Routes>
           {/* root → send to dashboard or login */}
           <Route
