@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { FcGoogle } from 'react-icons/fc';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     console.log("🔐 Login attempt:", email);
   
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -33,7 +36,26 @@ export default function Login() {
         navigate("/dashboard");
       }, 500);
     }
+    setLoading(false); 
   };
+
+  const handleGoogleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true); 
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: 'https://budget-bud-red.vercel.app/dashboard'
+      }
+    });
+  
+    if (error) {
+      console.error("Google sign-in error:", error.message);
+      setMessage("Google login failed. Please try again.");
+    }
+    setLoading(false); 
+  };
+  
   
 
   return (
@@ -57,11 +79,14 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button className="btn btn-primary w-full" type="submit">
-            Login
+          <button className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`} type="submit" disabled={loading}>
+            {loading ? "Logging in…" : "Login"}
           </button>
         </form>
-        {message && (<p className={`text-sm mt-4 text-center ${ message.includes("success") ? "text-green-500" : "text-red-500"}`}>{message}</p>)}
+        <button className="btn btn-outline w-full flex items-center justify-center" onClick={handleGoogleLogin} disabled={loading}>
+            <FcGoogle className="text-xl mr-2" /> Continue with Google
+          </button>
+       {message && (<p className={`text-sm mt-4 text-center ${ message.includes("success") ? "text-green-500" : "text-red-500"}`}>{message}</p>)}
       </div>
     </div>
   );
