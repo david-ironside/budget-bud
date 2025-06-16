@@ -83,9 +83,15 @@ export default function Login() {
             {loading ? "Logging in…" : "Login"}
           </button>
         </form>
-        <button className="btn btn-outline w-full flex items-center justify-center" onClick={handleGoogleLogin} disabled={loading}>
-            <FcGoogle className="text-xl mr-2" /> Continue with Google
-          </button>
+        <button
+          type="button"
+          className="btn btn-outline w-full flex items-center justify-center gap-2 py-2"
+          onClick={handleGoogleLogin}
+          disabled={loading}
+        >
+          <FcGoogle className="text-xl" />
+          <span className="font-medium">Continue with Google</span>
+        </button>
        {message && (<p className={`text-sm mt-4 text-center ${ message.includes("success") ? "text-green-500" : "text-red-500"}`}>{message}</p>)}
       </div>
     </div>
