@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from "react-icons/fa"; 
 
+const getRedirectUrl = () => `${window.location.origin}/dashboard`;
+
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -45,7 +47,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://budget-bud-red.vercel.app/dashboard'
+        redirectTo: getRedirectUrl()
       }
     });
   
@@ -55,22 +57,24 @@ export default function Login() {
     }
     setLoading(false); 
   };
-
+  
   const handleFacebookLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "facebook",
       options: {
-        redirectTo: "https://budget-bud-red.vercel.app/dashboard",
-      },
+        redirectTo: getRedirectUrl()
+      }
     });
+  
     if (error) {
       console.error("Facebook sign-in error:", error.message);
       setMessage("Facebook login failed. Please try again.");
     }
     setLoading(false);
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
@@ -93,8 +97,12 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`} type="submit" disabled={loading}>
-            {loading ? "Logging in…" : "Login"}
+          <button className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`} type="submit" disabled={loading} aria-busy={loading}>
+          {loading ? (
+            <span className="loading loading-spinner loading-sm"></span>
+          ) : (
+            "Login"
+          )}
           </button>
         </form>
         <div className="mt-3">
