@@ -7,9 +7,14 @@ export default function NavBar() {
   const { isAuthenticated, user } = useAuth();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/login");
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Logout error:", error.message);
+    } else {
+      navigate("/login"); // Redirect after logout
+    }
   };
+  
 
   return (
     <div className="navbar bg-base-100 shadow mb-6">
