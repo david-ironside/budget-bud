@@ -1,3 +1,4 @@
+// src/components/ui/Card.jsx
 export function Card({ children, className }) {
     return <div className={`card bg-base-100 shadow-md ${className}`}>{children}</div>;
   }

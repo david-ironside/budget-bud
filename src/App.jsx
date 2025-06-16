@@ -9,6 +9,7 @@ import { useAuth } from "./contexts/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import PrivateRoute from "./components/routes/PrivateRoute";
 import PublicRoute from "./components/routes/PublicRoute";
+import MyAccount from "./pages/MyAccount";
 
 export default function App() {
   const { isAuthenticated } = useAuth(); 
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/login" element={<PublicRoute element={<Login />} />} />
         <Route path="/register" element={<PublicRoute element={<Register />} />} />
         <Route path="/dashboard" element={<PrivateRoute element={<Dashboard />} />} />
+        <Route path="/account" element={<PrivateRoute><MyAccount/></PrivateRoute>} />
       </Routes>
     </div>
   );

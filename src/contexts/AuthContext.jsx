@@ -51,28 +51,29 @@ export function AuthProvider({ children }) {
     });
 
     // Auth state change listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const signedInUser = session?.user ?? null;
-      setUser(signedInUser);
-      setIsAuthenticated(!!signedInUser);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        const signedInUser = session?.user ?? null;
+        setUser(signedInUser);
+        setIsAuthenticated(!!signedInUser);
 
-      if (signedInUser) {
-        ensureProfile(signedInUser);
-        navigate("/dashboard");
-      } else {
-        setProfile(null);
-        const publicRoutes = ["/", "/login", "/register"];
-        if (!publicRoutes.includes(location.pathname)) {
+        if (event === "SIGNED_IN" && signedInUser) {
+          ensureProfile(signedInUser);
+          navigate("/dashboard");
+        }
+
+        if (event === "SIGNED_OUT") {
+          setProfile(null);
           navigate("/");
         }
-      }      
-    });
+      }
+    );
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, profile, loading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, profile, loading, setProfile }}>
       {loading ? <div className="p-6">Loading...</div> : children}
     </AuthContext.Provider>
   );
